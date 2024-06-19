@@ -1,21 +1,164 @@
-<html>
-    <head>
-      <link href="jogodavelha.css" rel="stylesheet" type="text/css" />
-    </head>
-  <body>
-    <div id="board">
-      <!-- criar 9 casinhas -->
-      <div class="casinha"></div>
-      <div class="casinha gray"></div>
-      <div class="casinha"></div>
-      <div class="casinha gray"></div>
-      <div class="casinha"></div>
-      <div class="casinha gray"></div>
-      <div class="casinha"></div>
-      <div class="casinha gray"></div>
-      <div class="casinha"></div>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 10px;
+      border: 5px solid #333;
+      border-radius: 10px;
+      background-color: #222;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      margin-bottom: 20px;
+    }
+
+    .cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      cursor: pointer;
+      background-color: #444;
+      transition: background-color 0.3s ease;
+    }
+
+    .cell:hover {
+      background-color: #666;
+    }
+
+    #vencedor {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    #btn-reiniciar {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #btn-reiniciar:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tic-Tac-Toe</h1>
+    <div class="board" id="board">
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
     </div>
-    <script type="text/javascript" src="jogodavelha.js"></script>
-  </body>
-  </body>
+    <div id="vencedor"></div>
+    <button id="btn-reiniciar">Reiniciar Jogo</button>
+  </div>
+
+  <script>
+    const board = document.getElementById("board");
+    const casinhas = board.getElementsByClassName("cell");
+    const boxVencedor = document.getElementById("vencedor");
+    const btnReiniciar = document.getElementById("btn-reiniciar");
+    let jogadas = 0;
+    let jogoAtivo = true;
+
+    for (let i = 0; i < casinhas.length; i++) {
+      casinhas[i].addEventListener('click', casinhaclick);
+    }
+
+    btnReiniciar.addEventListener('click', reiniciarJogo);
+
+    function casinhaclick() {
+      if (jogoAtivo && this.innerHTML === "") {
+        if (jogadas % 2 === 0) {
+          this.innerHTML = "X";
+          this.style.color = "#ff6347"; // cor vermelha para X
+        } else {
+          this.innerHTML = "O";
+          this.style.color = "#4169e1"; // cor azul para O
+        }
+        jogadas++;
+        verificaGanhador();
+      }
+    }
+
+    function verificaGanhador() {
+      const possibilidades = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+      ];
+
+      for (let possibilidade of possibilidades) {
+        const [a, b, c] = possibilidade;
+        if (casinhas[a].innerHTML !== "" && casinhas[a].innerHTML === casinhas[b].innerHTML && casinhas[b].innerHTML === casinhas[c].innerHTML) {
+          jogoAtivo = false;
+          casinhas[a].style.backgroundColor = "#7FFF00"; // cor verde para a vitória
+          casinhas[b].style.backgroundColor = "#7FFF00";
+          casinhas[c].style.backgroundColor = "#7FFF00";
+          boxVencedor.innerHTML = "O '" + casinhas[a].innerHTML + "' Venceu!";
+          return;
+        }
+      }
+
+      if (jogadas === 9) {
+        jogoAtivo = false;
+        boxVencedor.innerHTML = "Empate!";
+      }
+    }
+
+    function reiniciarJogo() {
+      for (let i = 0; i < casinhas.length; i++) {
+        casinhas[i].innerHTML = "";
+        casinhas[i].style.backgroundColor = "#444";
+        casinhas[i].style.color = "#fff"; // resetar cor do texto
+      }
+      boxVencedor.innerHTML = "";
+      jogadas = 0;
+      jogoAtivo = true;
+    }
+  </script>
+</body>
 </html>
